@@ -39,7 +39,8 @@ void checkFile(){ //check file for existence, does not check for appropriate siz
 }
 
 void EraseSector(char n) {
-    assert(n < NUM_SECTORS);     //validate address
+    if(n >= NUM_SECTORS)//validate address
+        return;     
     checkFile();                        //check file for existence, if not, create and fill with FF
     pt = fopen(FNAME,"rb+");             //open the file
     fseek(pt,SECTOR_SIZE*n,SEEK_SET);   //seek to sector start
@@ -55,8 +56,8 @@ void EraseAllSectors() {                //no need to checkfile as every single s
 }
 unsigned short ReadWord(unsigned long long nAddress){
     unsigned short ret;                          //return value
-    assert((nAddress & 0x01) == 0);     //validate address
-    assert(nAddress < SECTOR_SIZE*NUM_SECTORS);     //validate address
+    if ((nAddress & 0x01) != 0 || nAddress >= SECTOR_SIZE*NUM_SECTORS)
+        return;
     checkFile();                        //check file for existence, if not, create and fill with FF
     pt = fopen(FNAME,"rb+");             //open file
     fseek(pt,nAddress,SEEK_SET);        //seek to address
@@ -67,8 +68,8 @@ unsigned short ReadWord(unsigned long long nAddress){
 }
 void WriteWord(unsigned long long nAddress, unsigned short d){
     unsigned short ret;
-    assert((nAddress & 0x01) == 0); //check address
-    assert(nAddress < SECTOR_SIZE*NUM_SECTORS);     //validate address
+    if ((nAddress & 0x01) != 0 || nAddress >= SECTOR_SIZE*NUM_SECTORS)
+        return;
     checkFile();                    //check file for existence, if not, create and fill with FF
     pt = fopen(FNAME,"rb+");         //open file
     fseek(pt,nAddress,SEEK_SET);    //seek to address
